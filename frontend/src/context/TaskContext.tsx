@@ -58,7 +58,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const API_PREFIX = '/su/backend';
+  const API_PREFIX = "http://46.28.44.5:3103/su/backend";
   useEffect(() => {
     const fetchProjects = async () => {
       try {
