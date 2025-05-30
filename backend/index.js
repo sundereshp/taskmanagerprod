@@ -52,8 +52,11 @@ async function startServer(port) {
 const PORT = process.env.PORT || 5000;
 startServer(parseInt(PORT));
 
+// Base API path
+const API_PREFIX = '/su/backend';
+
 // GET all projects
-app.get('/api/projects', async (req, res) => {
+app.get(`${API_PREFIX}/projects`, async (req, res) => {
     try {
         const [projects] = await pool.query('SELECT * FROM projects ORDER BY id');
         res.json(projects);
@@ -64,7 +67,7 @@ app.get('/api/projects', async (req, res) => {
 });
 
 // GET single project with its tasks
-app.get('/api/projects/:id', async (req, res) => {
+app.get(`${API_PREFIX}/projects/:id`, async (req, res) => {
     try {
         const [projects] = await pool.query('SELECT * FROM projects WHERE id = ?', [req.params.id]);
         if (projects.length === 0) {
@@ -81,7 +84,7 @@ app.get('/api/projects/:id', async (req, res) => {
 });
 
 // POST create new project
-app.post('/api/projects', async (req, res) => {
+app.post(`${API_PREFIX}/projects`, async (req, res) => {
     try {
         const requiredFields = ['userID', 'name', 'startDate', 'endDate', 'wsID'];
         const missing = requiredFields.filter(field => !req.body[field]);
@@ -134,7 +137,7 @@ app.post('/api/projects', async (req, res) => {
 });
 
 // PATCH update project
-app.patch('/api/projects/:id', async (req, res) => {
+app.put(`${API_PREFIX}/projects/:id`, async (req, res) => {
     try {
         const projectId = req.params.id;
         const allowedUpdates = ['userID', 'name', 'description', 'startDate', 'endDate', 'estHours', 'actHours', 'wsID'];
@@ -235,7 +238,7 @@ app.patch('/api/projects/:id', async (req, res) => {
 });
 
 // DELETE project
-app.delete('/api/projects/:id', async (req, res) => {
+app.delete(`${API_PREFIX}/projects/:id`, async (req, res) => {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
@@ -275,7 +278,7 @@ app.get('/api/tasks', async (req, res) => {
 });
 
 // POST create new task (including subtasks)
-app.post('/api/tasks', async (req, res) => {
+app.post(`${API_PREFIX}/tasks`, async (req, res) => {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
@@ -417,7 +420,7 @@ app.post('/api/tasks', async (req, res) => {
 });
 
 // GET tasks for a specific project
-app.get('/api/tasks/project/:projectId', async (req, res) => {
+app.get(`${API_PREFIX}/tasks/project/:projectId`, async (req, res) => {
     try {
         const projectId = req.params.projectId;
         
@@ -466,7 +469,7 @@ function formatDateForMySQL(date) {
 }
 
 // PUT update task
-app.put('/api/tasks/:id', async (req, res) => {
+app.put(`${API_PREFIX}/tasks/:id`, async (req, res) => {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
@@ -561,7 +564,7 @@ app.put('/api/tasks/:id', async (req, res) => {
 });
 
 // DELETE task
-app.delete('/api/tasks/:id', async (req, res) => {
+app.delete(`${API_PREFIX}/tasks/:id`, async (req, res) => {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();

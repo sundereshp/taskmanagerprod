@@ -58,11 +58,11 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const API_PREFIX = '/su/backend';
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/projects');
+        const response = await fetch(API_PREFIX + '/projects');
         if (!response.ok) throw new Error('Failed to fetch projects');
         const fetchedProjects = await response.json();
         setProjects(fetchedProjects);
@@ -89,7 +89,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/projects');
+        const response = await fetch(API_PREFIX + '/projects');
         if (!response.ok) throw new Error('Failed to fetch projects');
 
         const projects = await response.json();
@@ -145,9 +145,10 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     return rootTasks;
   }
 
+
   const fetchTasks = async (projectId: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/project/${projectId}`);
+      const response = await fetch(`${API_PREFIX}/tasks/project/${projectId}`);
       if (!response.ok) throw new Error('Failed to fetch tasks');
 
       const tasks = await response.json();
@@ -168,7 +169,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
 
   const addProject = async (name: string, description: string = '') => {
     try {
-      const response = await fetch('http://localhost:5000/api/projects', {
+      const response = await fetch(`${API_PREFIX}/projects`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -209,7 +210,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     actHours: number
   ) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/projects/${projectId}`, {
+      const response = await fetch(`${API_PREFIX}/projects/${projectId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -244,7 +245,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
 
   const renameProject = async (projectId: string, name: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/projects/${projectId}`, {
+      const response = await fetch(`${API_PREFIX}/projects/${projectId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name })
@@ -263,7 +264,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
 
   const deleteProject = async (projectId: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/projects/${projectId}`, {
+      const response = await fetch(`${API_PREFIX}/projects/${projectId}`, {
         method: 'DELETE'
       });
 
@@ -323,7 +324,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       toast.loading('Creating project copy...');
 
       // Create the new project via API
-      const projectResponse = await fetch('http://localhost:5000/api/projects', {
+      const projectResponse = await fetch(`${API_PREFIX}/projects`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -344,7 +345,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       toast.loading('Copying tasks...');
 
       // Fetch all tasks for the source project
-      const tasksResponse = await fetch(`http://localhost:5000/api/tasks/project/${projectId}`);
+      const tasksResponse = await fetch(`${API_PREFIX}/tasks/project/${projectId}`);
       if (!tasksResponse.ok) throw new Error('Failed to fetch tasks for duplication');
 
       const tasks = await tasksResponse.json();
@@ -372,7 +373,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
           completedBy: null
         };
 
-        const response = await fetch('http://localhost:5000/api/tasks', {
+        const response = await fetch(`${API_PREFIX}/tasks`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newTask)
@@ -401,7 +402,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
 
 
       // Refresh the projects list to include the new project
-      const updatedProjectsResponse = await fetch('http://localhost:5000/api/projects');
+      const updatedProjectsResponse = await fetch(`${API_PREFIX}/projects`);
       if (!updatedProjectsResponse.ok) throw new Error('Failed to fetch updated projects');
 
       const updatedProjects = await updatedProjectsResponse.json();
@@ -455,7 +456,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch(`${API_PREFIX}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTaskPayload)
@@ -488,7 +489,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Update the task
-      const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+      const response = await fetch(`${API_PREFIX}/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
@@ -528,7 +529,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch(`${API_PREFIX}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newSubtaskPayload)
@@ -547,7 +548,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
 
   const updateSubtask = async (projectId: string, taskId: string, subtaskId: string, updates: Partial<Subtask>) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${subtaskId}`, {
+      const response = await fetch(`${API_PREFIX}/tasks/${subtaskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
@@ -593,7 +594,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
         parentID: parseInt(subtaskId),
       };
 
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch(`${API_PREFIX}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newActionItemPayload)
@@ -629,7 +630,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
         updates.expanded = currentActionItem.expanded;
       }
 
-      const response = await fetch(`http://localhost:5000/api/tasks/${actionItemId}`, {
+      const response = await fetch(`${API_PREFIX}/tasks/${actionItemId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
@@ -702,7 +703,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
         parentID: parseInt(actionItemId),
       };
 
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch(`${API_PREFIX}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newSubactionPayload)
@@ -736,7 +737,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     updates: Partial<SubactionItem>
   ) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${subactionItemId}`, {
+      const response = await fetch(`${API_PREFIX}/tasks/${subactionItemId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
@@ -787,7 +788,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
 
   const updateItem = async (itemId: string, updates: any) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${itemId}`, {
+      const response = await fetch(`${API_PREFIX}/tasks/${itemId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
@@ -808,7 +809,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   // Unified delete function for all levels
   const deleteItem = async (projectId: string, itemId: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${itemId}`, {
+      const response = await fetch(`${API_PREFIX}/tasks/${itemId}`, {
         method: 'DELETE',
       });
 
